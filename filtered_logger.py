@@ -164,3 +164,60 @@ def get_db() -> MySQLConnection:
         password=os.getenv('PERSONAL_DATA_DB_PASSWORD'),
         database=os.getenv('PERSONAL_DATA_DB_NAME')
     )
+
+
+def main() -> None:
+    """
+    The main function retrieves all records from the 'users' table in a
+    secure database and processes them.
+
+    Steps:
+    1. Establish a database connection using `get_db()`.
+    2. Obtain a logger using `get_logger()` for logging purposes.
+    3. Create a cursor object to execute SQL queries.
+    4. Execute an SQL query to fetch all rows from the 'users' table.
+    5. Iterate through the result set and print each row.
+
+    This function does not return any values and should only run when the
+    module is executed as the main program.
+
+    Usage:
+        When running this script directly, the `main` function will be executed
+        to fetch and display all records from the 'users' table.
+
+    Returns:
+        None
+
+    Raises:
+        This function does not raise any exceptions directly, but any exception
+        related to database connections or query execution (e.g., connection
+        errors,SQL syntax errors) should be handled in a production environment
+
+    Example:
+        Output when the module is executed:
+        ('Marlene Wood', 'hwestiii@att.net', '(473) 401-4253', '261-72-6780',
+        'K5?BMNv', ...)
+        ('Belen Bailey', 'bcevc@yahoo.com', '(539) 233-4942', '203-38-5395',
+        '^3EZ~TkX', ...)
+    """
+
+    # Establish a connection to the database
+    my_db = get_db()
+
+    # Get the logger to log data processing steps
+    logger = get_logger()
+
+    # Create a cursor object to execute SQL queries
+    cursor = my_db.cursor()
+
+    # Execute an SQL query to fetch all rows from the 'users' table
+    cursor.execute("SELECT * FROM users")
+    rows = cursor.fetchall()
+
+    # Iterate through the result set and print each row
+    for row in rows:
+        print(row)
+
+
+if __name__ == "__main__":
+    main()
