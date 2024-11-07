@@ -9,6 +9,8 @@ messages using a custom logging formatter.
 import re
 import logging
 from typing import List
+import os.getenv
+import mysql.connector
 
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
@@ -131,3 +133,34 @@ def get_logger() -> logging.Logger:
     logger.addHandler(stream_handler)
 
     return logger
+
+
+def get_db() -> MySQLConnection:
+    """
+    Establishes a connection to a MySQL database using credentials from
+    environment variables.
+
+    This function retrieves the necessary database credentials (host, username,
+    password, and database name) from environment variables and uses them to
+    establish a connection to a MySQL database.
+
+    The environment variables required are:
+        - PERSONAL_DATA_DB_HOST: The hostname of the database.
+        - PERSONAL_DATA_DB_USERNAME: The username for the database.
+        - PERSONAL_DATA_DB_PASSWORD: The password for the database.
+        - PERSONAL_DATA_DB_NAME: The name of the database.
+
+    Returns:
+        MySQLConnection: A MySQLConnection object representing the established
+        database connection.
+
+    Raises:
+        mysql.connector.Error: If there is any issue with the database
+        connection.
+    """
+    return mysql.connector.connect(
+        host=os.getenv('PERSONAL_DATA_DB_HOST'),
+        user=os.getenv('PERSONAL_DATA_DB_USERNAME'),
+        password=os.getenv('PERSONAL_DATA_DB_PASSWORD'),
+        database=os.getenv('PERSONAL_DATA_DB_NAME')
+    )
