@@ -1,11 +1,60 @@
 #!/usr/bin/env python3
-"""Module of filter_datum function
+"""
+Module containing the filter_datum function and RedactingFormatter class.
+
+This module provides functionality to redact sensitive information in log
+messages using a custom logging formatter.
 """
 
 import re
+import logging
+from typing import List
 
 
-def filter_datum(fields: list, redaction: str,
+class RedactingFormatter(logging.Formatter):
+    """
+    Redacting Formatter class to redact sensitive fields in log messages.
+
+    This class formats log messages by replacing the values of sensitive fields
+    with a redaction string before outputting the log message.
+
+    Attributes:
+        fields (List[str]): A list of field names to be redacted in the log
+            messages.
+    """
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields: List[str]):
+        """
+        Initializes the RedactingFormatter with a list of fields to redact.
+
+        Args:
+            fields (List[str]): The list of field names to be redacted in log
+            messages.
+        """
+        self.fields = fields
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+
+    def format(self, record: logging.LogRecord) -> str:
+        """
+        Formats a log record, redacting sensitive fields before logging.
+
+        Args:
+            record (logging.LogRecord): The log record to format.
+
+        Returns:
+            str: The formatted log message with sensitive fields redacted.
+        """
+        # Redact sensitive information in the log message
+        record.msg = filter_datum(self.fields, self.REDACTION,
+                                  record.msg, self.SEPARATOR)
+        return super().format(record)
+
+
+def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """
     Redacts sensitive fields in a given message.
@@ -15,7 +64,7 @@ def filter_datum(fields: list, redaction: str,
     returns the modified message.
 
     Args:
-        fields (list): A list of field names to be redacted
+        fields (List[str]): A list of field names to be redacted
         (e.g., 'name', 'email').
 
         redaction (str): The string to replace the sensitive field values with.
@@ -38,18 +87,8 @@ def filter_datum(fields: list, redaction: str,
         # Output: 'name=bob;email=bob@dylan.com;password=xxx;
         date_of_birth=xxx;'
     """
-
-    # Initialize an empty string to store the modified message
-    new_string = ""
-
-    # Iterate over each field to be redacted
+    # Redact the sensitive fields in the message
     for field in fields:
-        # Use regular expression substitution to replace the field's value
-        # with the redaction string
-        # The pattern matches the field name followed by any characters
-        # except the separator
-        new_string = re.sub(f"{field}=[^{re.escape(separator)}]*",
-                            f"{field}={redaction}", message)
-
-    # Return the modified message after all fields have been processed
-    return new_string
+        message = re.sub(f"{field}=[^{re.escape(separator)}]*",
+                         f"{field}={redaction}", message)
+    return message
