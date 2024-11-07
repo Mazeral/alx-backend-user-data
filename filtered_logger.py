@@ -11,6 +11,9 @@ import logging
 from typing import List
 
 
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+
+
 class RedactingFormatter(logging.Formatter):
     """
     Redacting Formatter class to redact sensitive fields in log messages.
@@ -92,3 +95,39 @@ def filter_datum(fields: List[str], redaction: str,
         message = re.sub(f"{field}=[^{re.escape(separator)}]*",
                          f"{field}={redaction}", message)
     return message
+
+
+def get_logger() -> logging.Logger:
+    """
+    Creates and configures a logger named 'user_data' for logging user data.
+
+    This function sets up a logger with the following characteristics:
+        - Named 'user_data'.
+        - Log level is set to INFO.
+        - It does not propagate messages to other loggers.
+        - Uses a stream handler to log messages to the console.
+        - Applies a custom RedactingFormatter to redact sensitive fields.
+
+    Returns:
+        logging.Logger: A configured logger instance with redaction enabled.
+    """
+
+    # Creating a logger named "user_data"
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+
+    # Ensures that the logger doesn't propagate messages to other loggers
+    logger.propagate = False
+
+    # RedactingFormatter with PII_FIELDS
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+
+    # Creating a stream handler to log to the console and attaching
+    # the formatter
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+
+    # Attaching the handler to the logger
+    logger.addHandler(stream_handler)
+
+    return logger
