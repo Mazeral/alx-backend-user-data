@@ -235,5 +235,20 @@ def hash_function(password: str) -> bytes:
     return hashed
 
 
+def is_valid(hashed_password: bytes, password: str) -> bool:
+    """
+    Validates a password by checking if it matches the hashed password.
+
+    Args:
+        hashed_password (bytes): The previously hashed password.
+        password (str): The plain text password to validate.
+
+    Returns:
+        bool: True if the password matches the hashed password,
+        False otherwise.
+    """
+    return bcrypt.checkpw(password.encode(), hashed_password)
+
+
 if __name__ == "__main__":
     main()
