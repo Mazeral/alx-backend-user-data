@@ -11,6 +11,7 @@ import logging
 from typing import List
 import os.getenv
 import mysql.connector
+import bcrypt
 
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
@@ -217,6 +218,21 @@ def main() -> None:
     # Iterate through the result set and print each row
     for row in rows:
         print(row)
+
+
+def hash_function(password: str) -> bytes:
+    """
+    Hashes a password with a salt using bcrypt.
+
+    Args:
+        password (str): The plain text password to hash.
+
+    Returns:
+        bytes: The salted, hashed password as a byte string.
+    """
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode(), salt)
+    return hashed
 
 
 if __name__ == "__main__":
