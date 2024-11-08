@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 """
-Module containing the filter_datum function and RedactingFormatter class.
+Module containing functions and classes for handling personal data logging,
+database connections, and password hashing.
 
-This module provides functionality to redact sensitive information in log
-messages using a custom logging formatter.
+This module includes:
+- `filter_datum` function to redact sensitive data.
+- `RedactingFormatter` class to handle log redaction.
+- Functions to handle logging, database connection, and password hashing.
 """
 
 import re
 import logging
 from typing import List
-import os.getenv
+import os
 import mysql.connector
 import bcrypt
-
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
@@ -136,7 +138,7 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db() -> MySQLConnection:
+def get_db() -> mysql.connector.connection.MySQLConnection:
     """
     Establishes a connection to a MySQL database using credentials from
     environment variables.
@@ -220,7 +222,7 @@ def main() -> None:
         print(row)
 
 
-def hash_function(password: str) -> bytes:
+def hash_password(password: str) -> bytes:
     """
     Hashes a password with a salt using bcrypt.
 
