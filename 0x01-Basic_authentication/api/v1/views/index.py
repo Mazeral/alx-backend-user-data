@@ -9,14 +9,14 @@ from api.v1.views import app_views
 def unauthorized_endpoint() -> str:
     """GET /unauthorized
     Returns: error 401"""
-    return abort(401)
+    abort(401)
 
 
 @app_views.route('/forbidden', methods=['GET'], strict_slashes=False)
 def forbidden_route() -> str:
     """Get /forbidden
     Returns: Forbidden error 403"""
-    return abort(403)
+    abort(403)
 
 
 @app_views.route('/status', methods=['GET'], strict_slashes=False)
