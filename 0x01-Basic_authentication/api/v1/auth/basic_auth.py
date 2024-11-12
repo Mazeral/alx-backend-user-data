@@ -50,6 +50,6 @@ class BasicAuth(Auth):
             # Try to decode the string using base64
             decoded = base64_authorization_header.b64decode(s, validate=True)
             return decoded
-        except (base64.binascii.Error, TypeError):
+        except (base64_authorization_header.binascii.Error, TypeError):
             # If decoding fails, it's not a valid Base64 string
             return None
