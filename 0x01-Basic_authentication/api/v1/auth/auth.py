@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import request from Flask
+from flask import request
 
 
 class Auth:
@@ -16,7 +16,7 @@ class Auth:
         """
         return None
 
-    def def current_user(self, request=None) -> TypeVar('User'):
+    def current_user(self, request=None) -> TypeVar('User'):
         """current_user method
         """
         return None
