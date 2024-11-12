@@ -21,6 +21,9 @@ class Auth:
             return True
         if path in excluded_paths:
             return False
+        for endpoint in excluded_paths:
+            if endpoint.startswith(path):
+                return False
         return False
 
     def authorization_header(self, request=None) -> str:
