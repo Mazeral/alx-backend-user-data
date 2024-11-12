@@ -70,10 +70,10 @@ class BasicAuth(Auth):
         Otherwise, return the user email and the user password - these 2
         values must be separated by a :"""
         if decoded_base64_authorization_header is None:
-            return None
-        if not isinstance(base64_authorization_header, str):
-            return None
-        if not (":" in decoded_base64_authorization_header):
-            return None
+            return None, None
+        if not isinstance(decoded_base64_authorization_header, str):
+            return None, None
+        if ":" not in decoded_base64_authorization_header:
+            return None, None
         email, password = decoded_base64_authorization_header.split(":", 1)
         return email, password
