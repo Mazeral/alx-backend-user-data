@@ -27,4 +27,6 @@ def stats() -> str:
 
 @app_views.route('/forbidden/', strict_slashes=False)
 def forbidden():
+    """ Returns forbidden error 403
+    """
     abort(403)
