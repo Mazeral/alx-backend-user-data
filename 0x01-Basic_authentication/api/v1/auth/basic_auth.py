@@ -71,11 +71,9 @@ class BasicAuth(Auth):
         values must be separated by a :"""
         if decoded_base64_authorization_header is None:
             return None
-        if not isinstance(decoded_base64_authorization_header, str):
+        if not isinstance(base64_authorization_header, str):
             return None
-        decoded_string = base64_authorization_header.\
-            b64decode(base64_string).decode('utf-8')
-        if not (":" in decoded_string):
+        if not (":" in decoded_base64_authorization_header):
             return None
-        email, password = decoded_string.split(":", 1)
+        email, password = decoded_base64_authorization_header.split(":", 1)
         return email, passwor
