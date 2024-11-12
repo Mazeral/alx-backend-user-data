@@ -4,7 +4,7 @@
 
 from api.v1.auth.auth import Auth
 from models.user import User
-from typing import TypeVar  # Import TypeVar to define a generic type
+from typing import TypeVar
 
 
 class BasicAuth(Auth):
@@ -137,3 +137,5 @@ class BasicAuth(Auth):
             user_email, user_pwd = user_creds
             user_obj = self.user_object_from_credentials(user_email, user_pwd)
             return user_obj
+        except:
+            pass
