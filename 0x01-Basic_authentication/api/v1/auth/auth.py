@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-from flask import request
-from typing import List, TypeVar
 """Auth model
 """
+from flask import request
+from typing import List, TypeVar
 
 
 class Auth:
