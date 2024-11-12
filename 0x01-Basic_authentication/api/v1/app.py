@@ -15,7 +15,7 @@ app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 auth = None
-auth_type = os.getenv('AUTH_TYPE')
+auth_type = getenv('AUTH_TYPE', 'auth')
 if auth_type == 'BasicAuth':
     from api.v1.auth.basic_auth import BasicAuth
     auth = BasicAuth()
@@ -51,7 +51,7 @@ def auth_checker():
     Checks the authentication
     """
     paths = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/',
-             'api/v1/users/', 'api/v1/status']
+             '/api/v1/users/', 'api/v1/status']
     if auth is None:
         return
     if request.path not in paths:
