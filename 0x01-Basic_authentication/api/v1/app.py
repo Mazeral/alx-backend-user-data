@@ -47,7 +47,6 @@ def forbidden(error) -> str:
 
 @app.before_request
 def auth_checker():
-    print(f"The path: {request.path}")
     """Auth checker
     Checks the authentication
     """
