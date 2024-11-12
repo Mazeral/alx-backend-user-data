@@ -3,6 +3,7 @@
 """
 
 from api.v1.auth.auth import Auth
+from models.user import User
 
 
 class BasicAuth(Auth):
@@ -77,3 +78,32 @@ class BasicAuth(Auth):
             return None, None
         email, password = decoded_base64_authorization_header.split(":", 1)
         return email, password
+
+    def user_object_from_credentials(
+            self,
+            user_email: str,
+            user_pwd: str) -> TypeVar('User'):
+        """Return None if user_email is None or not a string
+
+            Return None if user_pwd is None or not a string
+
+            Return None if your database (file) doesn’t contain
+            any User instance with email equal to user_email -
+            you should use the class method search of the User to
+            lookup the list of users based on their email. Don’t forget
+            to test all cases: “what if there is no user in DB?”, etc.
+
+            Return None if user_pwd is not the password of the User
+            instance found - you must use the method is_valid_password of User
+            Otherwise, return the User instance
+        """
+        if user_email is None or not isinstance(user_email, str) or\
+                user_pwd is None or not isinstance(user_pwd, str):
+            return None
+        user = User.search({"email": user_email})
+        if not user:
+            return None
+        if not user.is_valid_password(user_pwd):
+            return None
+        else:
+            return user
