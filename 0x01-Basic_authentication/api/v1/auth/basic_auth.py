@@ -10,8 +10,6 @@ from typing import TypeVar
 class BasicAuth(Auth):
     """Basic Auth class
     """
-    pass
-
     def extract_base64_authorization_header(self,
                                             authorization_header: str) -> str:
         """Extracts base64 string
@@ -115,27 +113,24 @@ class BasicAuth(Auth):
             request=None) -> TypeVar('User'):
         """returns the current user if exists
         """
-        try:
-            auth_header = super().authorization_header(request)
-            if auth_header is None:
-                return None
+        auth_header = super().authorization_header(request)
+        if auth_header is None:
+            return None
 
-            base64_auth_header = self.extract_base64_authorization_header(
-                    auth_header)
-            if base64_auth_header is None:
-                return None
+        base64_auth_header = self.extract_base64_authorization_header(
+                auth_header)
+        if base64_auth_header is None:
+            return None
 
-            decoded_header = self.decode_base64_authorization_header(
-                    base64_auth_header)
-            if decoded_header is None:
-                return None
+        decoded_header = self.decode_base64_authorization_header(
+                base64_auth_header)
+        if decoded_header is None:
+            return None
 
-            user_creds = self.extract_user_credentials(decoded_header)
-            if user_creds is None:
-                return None
+        user_creds = self.extract_user_credentials(decoded_header)
+        if user_creds is None:
+            return None
 
-            user_email, user_pwd = user_creds
-            user_obj = self.user_object_from_credentials(user_email, user_pwd)
-            return user_obj
-        except:
-            pass
+        user_email, user_pwd = user_creds
+        user_obj = self.user_object_from_credentials(user_email, user_pwd)
+        return user_obj
