@@ -5,6 +5,13 @@ from flask import jsonify, abort
 from api.v1.views import app_views
 
 
+@app_views.route('/unauthorized', methods=['GET'], strict_slashes=False)
+def unauthorized_endpoint() -> str:
+    """GET /unauthorized
+    Returns: error 401"""
+    return abort(401)
+
+
 @app_views.route('/status', methods=['GET'], strict_slashes=False)
 def status() -> str:
     """ GET /api/v1/status
@@ -24,6 +31,7 @@ def stats() -> str:
     stats = {}
     stats['users'] = User.count()
     return jsonify(stats)
+
 
 @app_views.route('/forbidden/', strict_slashes=False)
 def forbidden():

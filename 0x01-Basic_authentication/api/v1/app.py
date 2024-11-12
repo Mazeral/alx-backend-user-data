@@ -25,10 +25,10 @@ if auth_type == 'auth':
 
 
 @app.errorhandler(401)
-def unauthorized() -> str:
+def not_authorized(request) -> str:
     """unauthorized handler
     """
-    return jsonify({"error": "Unauthorized"})
+    return jsonify({"error": "Unauthorized"}), 401
 
 
 @app.errorhandler(404)
