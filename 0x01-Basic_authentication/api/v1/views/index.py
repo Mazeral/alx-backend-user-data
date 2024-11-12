@@ -25,6 +25,6 @@ def stats() -> str:
     stats['users'] = User.count()
     return jsonify(stats)
 
-@app_views.route('/api/v1/forbidden', methods=['GETS'], strict_slashes=False)
+@app_views.route('/forbidden/', strict_slashes=False)
 def forbidden():
     abort(403)
