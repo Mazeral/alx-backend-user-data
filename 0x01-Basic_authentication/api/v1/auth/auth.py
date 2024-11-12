@@ -6,6 +6,8 @@ from typing import List, TypeVar
 
 
 class Auth:
+    """Auth class
+    """
     def __init__(self):
         pass
 
