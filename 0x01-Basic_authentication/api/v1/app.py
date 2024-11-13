@@ -44,10 +44,12 @@ def forbidden(request) -> str:
 
 
 @app.before_request
-def auth_checker():
+def authenticate_user():
     """Auth checker
     Checks the authentication
     """
+    auth = None
+    auth_type = getenv('AUTH_TYPE', 'auth')
     if auth_type == 'Auth':
         auth = Auth()
     if auth_type == 'BasicAuth':
