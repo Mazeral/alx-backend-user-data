@@ -105,9 +105,9 @@ class BasicAuth(Auth):
         if len(users) <= 0:
             return None
         if users[0].is_valid_password(user_pwd):
-            return None
-        else:
             return users[0]
+        else:
+            return None
 
     def current_user(
             self,
