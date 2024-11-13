@@ -4,7 +4,7 @@
 import requests
 
 if __name__ == "__main__":
-    r = requests.get('http://0.0.0.0:3456/api/v1/users', headers={ 'Authorization': "HBTN" })
+    r = requests.get('http://0.0.0.0:5000/api/v1/users', headers={ 'Authorization': "HBTN" })
     if r.status_code != 403:
         print("Wrong status code: {}".format(r.status_code))
         exit(1)
