@@ -4,15 +4,11 @@
 
 if __name__ == "__main__":
     from api.v1.auth.basic_auth import BasicAuth
-    from api.v1.app import auth
 
-    if auth is None:
-        print("'auth' doesn't exist in api/v1/app.py")
-        exit(1)
-
-    if not isinstance(auth, BasicAuth):
-        print("auth is not an instance of BasicAuth")
+    ba = BasicAuth()
+    res = ba.decode_base64_authorization_header("NopBase64")
+    if res is not None:
+        print("decode_base64_authorization_header must return None if 'base64_authorization_header' is not a base64 string")
         exit(1)
     
     print("OK", end="")
-    
