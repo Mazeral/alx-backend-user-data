@@ -2,8 +2,8 @@
 """Basic auth model
 """
 
-from api.v1.auth.auth import Auth
 from models.user import User
+from .auth import Auth
 from typing import TypeVar
 
 
