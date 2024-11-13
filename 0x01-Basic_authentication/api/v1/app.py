@@ -16,12 +16,6 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 auth = None
 auth_type = getenv('AUTH_TYPE', 'auth')
-if auth_type == 'BasicAuth':
-    from api.v1.auth.basic_auth import BasicAuth
-    auth = BasicAuth()
-if auth_type == 'auth':
-    from api.v1.auth.auth import Auth
-    auth = Auth()
 
 
 @app.errorhandler(401)
@@ -50,6 +44,10 @@ def auth_checker():
     """Auth checker
     Checks the authentication
     """
+    if auth_type == 'BasicAuth':
+        auth = BasicAuth()
+    if auth_type == 'auth':
+        auth = Auth()
     excluded_paths = ['/api/v1/status/',
                       '/api/v1/unauthorized/',
                       '/api/v1/forbidden/']
