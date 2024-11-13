@@ -19,7 +19,7 @@ class Auth:
         if excluded_paths is None or len(excluded_paths) == 0:
             return True
         normalized_path = path.rstrip('/')
-        normalized_excluded_path = [path.rstrip('/') for path in excluded_paths]
+        normalized_excluded_path = [p.rstrip('/') for p in excluded_paths]
         if normalized_path in normalized_excluded_path:
             return False
         for endpoint in excluded_paths:
