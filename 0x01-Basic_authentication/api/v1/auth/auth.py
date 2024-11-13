@@ -20,7 +20,7 @@ class Auth:
             return True
         normalized_path = path.rstrip('/')
         normalized_excluded_path = [path.rstrip('/') for path in excluded_paths]
-        if normalized_path in excluded_paths:
+        if normalized_path in normalized_excluded_path:
             return False
         for endpoint in excluded_paths:
             if endpoint.startswith(path):
