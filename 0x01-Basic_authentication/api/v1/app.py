@@ -41,10 +41,11 @@ def auth_checker():
     """Auth checker
     Checks the authentication
     """
+    auth = None
     auth_type = getenv('AUTH_TYPE', 'auth')
     if auth_type == 'BasicAuth':
         auth = BasicAuth()
-    if auth_type == 'auth':
+    if auth_type == 'Auth':
         auth = Auth()
     excluded_paths = ['/api/v1/status/',
                       '/api/v1/unauthorized/',
