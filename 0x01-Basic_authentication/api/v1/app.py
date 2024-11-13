@@ -48,10 +48,6 @@ def authenticate_user():
     """Auth checker
     Checks the authentication
     """
-    if auth_type == 'Auth':
-        auth = Auth()
-    if auth_type == 'BasicAuth':
-        auth = BasicAuth()
     excluded_paths = ['/api/v1/status/',
                       '/api/v1/unauthorized/',
                       '/api/v1/forbidden/'
