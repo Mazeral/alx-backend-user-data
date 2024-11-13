@@ -32,14 +32,14 @@ def not_authorized(request) -> str:
 
 
 @app.errorhandler(404)
-def not_found(error) -> str:
+def not_found(request) -> str:
     """ Not found handler
     """
     return jsonify({"error": "Not found"}), 404
 
 
 @app.errorhandler(403)
-def forbidden(error) -> str:
+def forbidden(request) -> str:
     """Forbidden handler.
     """
     return jsonify({"error": "Forbidden"}), 403
@@ -50,18 +50,19 @@ def auth_checker():
     """Auth checker
     Checks the authentication
     """
-    paths = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/',
-             '/api/v1/users/', 'api/v1/status']
+    excluded_paths = ['/api/v1/status/',
+            '/api/v1/unauthorized/',
+            '/api/v1/forbidden/',
+            ]
     if auth is None:
         return
-    if request.path not in paths:
-        return
-    auth_result = auth.authorization_header(request)
-    if auth_result is None:
-        abort(401)
-    auth_user = auth.current_user(request)
-    if auth_user is None:
-        abort(403)
+    if auth.require_auth(request.path, excluded_paths):
+        auth_result = auth.authorization_header(request)
+        if auth_result is None:
+            abort(401)
+        auth_user = auth.current_user(request)
+        if auth_user is None:
+            abort(403)
 
 
 if __name__ == "__main__":
