@@ -2,6 +2,7 @@
 """Session auth model
 """
 from .auth import Auth
+import uuid
 
 
 class SessionAuth(Auth):
@@ -20,8 +21,5 @@ class SessionAuth(Auth):
         if not isinstance(user_id, str):
             return None
         session_id = str(uuid.uuid4())
-        if user_id in self.user_id_by_session_id:
-            self.user_id_by_session_id[user_id].append(session_id)
-        else:
-            self.user_id_by_session_id[user_id] = session_id
+        self.user_id_by_session_id[session_id] = user_id
         return session_id
