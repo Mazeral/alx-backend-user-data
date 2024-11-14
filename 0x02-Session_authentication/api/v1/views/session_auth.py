@@ -52,7 +52,6 @@ def login():
     return response
 
 
-
 @app_views.route(
         'auth_session/logout',
         methods=['DELETE'],
@@ -64,6 +63,6 @@ def destroy_session():
     from api.v1.auth import auth
     auth = Auth()
     result = auth.destroy_session(request)
-    if result == False:
+    if result is False:
         abort(404)
     return jsonify({}), 200
