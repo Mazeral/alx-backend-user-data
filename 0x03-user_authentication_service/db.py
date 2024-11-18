@@ -75,8 +75,10 @@ class DB:
         """
         try:
             if kwargs:
-                user = self._session.query(User).filter_by(**kwargs).one()
-                return user
+                user = self._session.query(User).filter_by(**kwargs).first()
+                if user:
+                    return user
+                return None
         except Exception as e:
             raise e
 
