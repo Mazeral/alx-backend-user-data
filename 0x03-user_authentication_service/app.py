@@ -8,6 +8,7 @@ from auth import Auth
 
 # Defining the Flask app instance
 app = Flask(__name__)
+auth = Auth()
 
 
 @app.route("/")
@@ -26,15 +27,39 @@ def home():
 
 @app.route("/users", methods=["POST"])
 def users():
+    """
+    Handles user registration via a POST request.
+
+    This route retrieves the `email` and `password` from the request form data,
+    and attempts to register a new user using the `auth.register_user` method.
+    If the registration is successful, it returns a JSON response indicating
+    the user has been created. If the email is already registered, it returns
+    an error response with status code 400.
+
+    Returns:
+        Response: A JSON response with a success message and the email on
+                  successful registration, or an error message if the
+                  registration fails.
+
+    Raises:
+        Exception: Any exception raised during user registration is caught
+                   and handled, returning an appropriate error message.
+    """
     try:
         email = request.form.get("email")
         password = request.form.get("password")
-        auth = Auth()
+
+        # Attempt to register the user, error generates here if any
         user = auth.register_user(email, password)
-    return jsonify({"email" : email,
-                    "message": "user created"})
+
+        # Return success response
+        return jsonify({
+            "email": email,
+            "message": "user created"
+        })
     except Exception as e:
-            return jsonify({"message": "email already registered"}), 400
+        # Return error response if email is already registered
+        return jsonify({"message": "email already registered"}), 400
 
 
 # Running the Flask app
