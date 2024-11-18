@@ -56,3 +56,4 @@ class Auth:
                 raise ValueError(f"User {email} already exists")
         except ValueError as e:
             raise e
+            return None
