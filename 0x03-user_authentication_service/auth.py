@@ -4,6 +4,7 @@
 import bcrypt
 from db import DB
 from user import User
+from sqlalchemy.orm.exc import NoResultFound
 
 
 def _hash_password(password: str) -> bytes:
@@ -57,3 +58,37 @@ class Auth:
         except ValueError as e:
             raise e
             return None
+
+    def valid_login(self, email: str, password: str) -> bool:
+        """
+        Validates a user's login credentials.
+
+        This method checks whether the provided email and password match a user
+        record in the database. The password is verified against the stored
+        hashed password using bcrypt.
+
+        Args:
+            email (str): The email address of the user attempting to log in.
+            password (str): The plaintext password provided by the user.
+
+        Returns:
+            bool: True if the credentials are valid (email exists and password
+                  matches), False otherwise.
+
+        Raises:
+            NoResultFound: If no user with the specified email is found in the
+                           database.
+        """
+        try:
+            # Fetch the user by email from the database
+            user = self._db.find_user_by(email=email)
+
+            # Check if the user exists and verify the password
+            if user is not None:
+                password_bytes = password.encode('utf-8')  # Convert to bytes
+                if bcrypt.checkpw(password_bytes, user.hashed_password):
+                    return True
+            return False
+        except NoResultFound:
+            # Return False if no user is found
+            return False
