@@ -119,6 +119,8 @@ class DB:
                 if hasattr(user, key):  # Ensure the key is
                     # a valid attribute of the user
                     setattr(user, key, value)
+                else:
+                    raise ValueError
 
             # Commit the changes to the database
             self._session.commit()
@@ -126,5 +128,5 @@ class DB:
         except NoResultFound as e:
             # Handle any exceptions that occur and re-raise them
             raise e
-        except Exception as e:
+        except ValueError as e:
             raise e
