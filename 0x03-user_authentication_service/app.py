@@ -189,6 +189,52 @@ def get_reset_password_token():
         abort(403)
 
 
+@app.route("/reset_password", methods=["PUT"], strict_slashes=False)
+def update_password():
+    """
+    Updates a user's password using a reset token.
+
+    This route accepts a PUT request with an email, reset token, and new
+    password.
+    It checks if the user exists with the provided email and, if so, updates
+    their password using the provided reset token. If the user is found and
+    the password is updated, a success message is returned. If the user is
+    not found or any error occurs, a 403 Forbidden or relevant error is raised.
+
+    Methods:
+        PUT
+
+    Args:
+        None: The email, reset_token, and new_password are provided via the
+              request's form data.
+
+    Returns:
+        Response: A JSON response with the email and a success message
+                  if the password is updated successfully.
+
+    Raises:
+        403 Forbidden: If the user is not found for the provided email.
+        Exception: If any other error occurs during the process.
+    """
+    try:
+        email = request.form.get("email")
+        reset_token = request.form.get("reset_token")
+        new_password = request.form.get("new_password")
+        user = auth.find_user_by(**{"email": email})
+        if user:
+            auth._db.update_password(reset_token, new_password)
+            return 200, jsonify(
+                    {
+                        "email": email,
+                        "message": "Password updated"
+                        }
+                    )
+        else:
+            abort(403)
+    except Exception as e:
+        raise e
+
+
 # Running the Flask app
 if __name__ == "__main__":
     """
