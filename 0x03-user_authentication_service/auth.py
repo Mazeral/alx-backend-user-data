@@ -136,8 +136,9 @@ class Auth:
             # Assign the session ID to the user
             user.session_id = session_id
 
-            # Commit the changes to the database
-            self._session.commit()
+            # updates the user
+            session_dict = {"session_id": session_id}
+            self._db.update_user(user.id, **session_dict)
 
             # Return the generated session ID
             return session_id

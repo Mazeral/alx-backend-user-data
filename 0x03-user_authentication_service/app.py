@@ -64,13 +64,34 @@ def users():
 
 @app.route('/sessions', methods=["POST"])
 def login():
-    email = request.form.email
-    password = request.form.password
-    try:
-        auth.valid_login(email=email, password=password)
+    """
+    Handles user login by validating credentials and creating a session.
+
+    This route receives user login credentials via a POST request, validates
+    the email and password, and creates a session for the user if the
+    credentials are correct. If the login is successful, it returns a JSON
+    response indicating success. If the credentials are invalid, it aborts
+    with a 401 status code.
+
+    Methods:
+        POST
+
+    Returns:
+        Response: A JSON response with the user's email and a success message
+                  if login is successful.
+
+    Raises:
+        401 Unauthorized: If the provided credentials are invalid.
+    """
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    login_validation = auth.valid_login(email=email, password=password)
+    if login_validation:
         auth.create_session(email=email)
-    except Exception as e:
-        abort(401)
+        return jsonify({"email": email, "message": "logged in"})
+
+    abort(401)
 
 
 # Running the Flask app
