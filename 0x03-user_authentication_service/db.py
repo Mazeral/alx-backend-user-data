@@ -123,6 +123,8 @@ class DB:
             # Commit the changes to the database
             self._session.commit()
 
-        except Exception as e:
+        except NoResultFound as e:
             # Handle any exceptions that occur and re-raise them
+            raise e
+        except Exception as e:
             raise e
