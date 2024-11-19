@@ -165,3 +165,22 @@ class Auth:
         if user:
             return user
         return None
+
+    def destroy_session(self, user_id: int) -> None:
+        """
+        Destroys the session for a specified user.
+
+        This method removes the session ID associated with a user, effectively 
+        logging them out. It updates the user's `session_id` field to `None` in 
+        the database.
+
+        Args:
+            user_id (int): The ID of the user whose session is to be destroyed.
+
+        Returns:
+            None: This method does not return any value.
+        """
+        user = self._db.find_user_by(**{"user_id": user_id})
+        if user:
+            self.update_user(**{"session_id": None})
+        return None
