@@ -3,7 +3,7 @@
 Flask app module.
 """
 
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, redirect
 from auth import Auth
 
 # Defining the Flask app instance
@@ -11,7 +11,7 @@ app = Flask(__name__)
 auth = Auth()
 
 
-@app.route("/")
+@app.route("/", strict_slashes=False)
 def home():
     """
     Home route that returns a welcome message.
@@ -25,7 +25,7 @@ def home():
     return jsonify({"message": "Bienvenue"})
 
 
-@app.route("/users", methods=["POST"])
+@app.route("/users", methods=["POST"], strict_slashes=False)
 def users():
     """
     Handles user registration via a POST request.
@@ -62,7 +62,7 @@ def users():
         return jsonify({"message": "email already registered"}), 400
 
 
-@app.route('/sessions', methods=["POST"])
+@app.route('/sessions', methods=["POST"], strict_slashes=False)
 def login():
     """
     Handles user login by validating credentials and creating a session.
@@ -92,6 +92,39 @@ def login():
         return jsonify({"email": email, "message": "logged in"})
 
     abort(401)
+
+
+@app.route("/sessions", methods=["DELETE"], strict_slashes=False)
+def logout():
+    """
+    Logs out a user by destroying their session.
+
+    This route receives a `session_id` via a DELETE request, retrieves the
+    user associated with the session ID, and if a user is found, it destroys
+    their session. If no user is found for the session ID, it aborts with a
+    403 Forbidden error. After logging out, the user is redirected to the
+    home page.
+
+    Methods:
+        DELETE
+
+    Args:
+        None: The session ID is provided via the request's form data.
+
+    Returns:
+        Response: A redirect response to the home page if the logout is
+        successful.
+
+    Raises:
+        403 Forbidden: If no user is found for the provided session ID.
+    """
+    session_id = request.form.get("session_id")
+    user = auth.get_user_from_session_id(session_id)
+    if user:
+        auth.destroy_session(user.id)
+        redirect("/")
+    else:
+        abort(403)
 
 
 # Running the Flask app
