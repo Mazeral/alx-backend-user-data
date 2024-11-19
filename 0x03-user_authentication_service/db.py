@@ -122,9 +122,8 @@ class DB:
                 if not hasattr(user, key):
                     # Not a valid attribute
                     raise ValueError
-                if hasattr(user, key):  # Ensure the key is
-                    # a valid attribute of the user
-                    setattr(user, key, value)
+                # a valid attribute of the user
+                setattr(user, key, value)
 
             # Commit the changes to the database
             self._session.commit()
