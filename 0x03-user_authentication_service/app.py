@@ -157,6 +157,38 @@ def profile():
         abort(403)
 
 
+@app.route("/reset_password", methods=["POST"], strict_slashes=False)
+def get_reset_password_token():
+    """
+    Initiates a password reset process by generating a reset token.
+
+    This route accepts a POST request with an email address and checks if a
+    user exists with that email. If the user exists, a reset password token
+    is generated and returned in the response. If no user is found for the
+    provided email, a 403 Forbidden error is raised.
+
+    Methods:
+        POST
+
+    Args:
+        None: The email is provided via the request's form data.
+
+    Returns:
+        Response: A JSON response containing the email and the reset token
+                  if the user exists.
+
+    Raises:
+        403 Forbidden: If no user is found for the provided email.
+    """
+    email = request.form.get("email")
+    user = auth._db.find_user_by(**{"email": email})
+    if user:
+        reset_token = auth.get_reset_password_token(email)
+        return jsonify({"email": email, "reset_token": reset_token})
+    else:
+        abort(403)
+
+
 # Running the Flask app
 if __name__ == "__main__":
     """
