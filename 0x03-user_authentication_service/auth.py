@@ -170,8 +170,8 @@ class Auth:
         """
         Destroys the session for a specified user.
 
-        This method removes the session ID associated with a user, effectively 
-        logging them out. It updates the user's `session_id` field to `None` in 
+        This method removes the session ID associated with a user, effectively
+        logging them out. It updates the user's `session_id` field to `None` in
         the database.
 
         Args:
@@ -182,5 +182,36 @@ class Auth:
         """
         user = self._db.find_user_by(**{"user_id": user_id})
         if user:
-            self.update_user(**{"session_id": None})
+            self._db.update_user(**{"session_id": None})
         return None
+
+    def get_reset_password_token(self, email: str) -> str:
+        """
+        Generates a reset password token for a user based on their email.
+
+        This method looks up a user by their email address. If the user is
+        found,  a unique reset password token is generated and associated with
+        the user  in the database. If no user is found with the provided email,
+        a ValueError  is raised.
+
+        Args:
+            email (str): The email address of the user requesting a password
+            reset.
+
+        Returns:
+            str: The generated reset password token if the user exists.
+
+        Raises:
+            ValueError: If no user is found with the provided email.
+            Exception: If any other error occurs during the process.
+        """
+        try:
+            user = self._db.find_user_by(**{"email": email})
+            if user:
+                reset_token = _generate_uuid()
+                self._db.update_user(user.id, **{"reset_token": reset_token})
+                return reset_token
+            else:
+                raise ValueError("User not found.")
+        except Exception as e:
+            raise e
