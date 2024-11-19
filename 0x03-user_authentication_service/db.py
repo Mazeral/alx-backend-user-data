@@ -119,15 +119,15 @@ class DB:
 
             # Update the attributes dynamically based on kwargs
             for key, value in kwargs.items():
+                if not hasattr(user, key):
+                    # Not a valid attribute
+                    raise ValueError
                 if hasattr(user, key):  # Ensure the key is
                     # a valid attribute of the user
                     setattr(user, key, value)
-                else:
-                    raise ValueError
 
             # Commit the changes to the database
             self._session.commit()
-            self._session.refresh(user)
 
         except NoResultFound as e:
             # Handle any exceptions that occur and re-raise them
