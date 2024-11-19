@@ -113,7 +113,7 @@ class DB:
         """
         try:
             # Fetch the user by ID
-            user = self.find_user_by(id=user_id)
+            user = self.find_user_by(**{"id": user_id})
 
             # Update the attributes dynamically based on kwargs
             for key, value in kwargs.items():

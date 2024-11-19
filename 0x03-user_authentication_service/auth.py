@@ -64,7 +64,7 @@ class Auth:
             ValueError: If a user with the given email already exists.
         """
         try:
-            user = self._db.find_user_by(email=email)
+            user = self._db.find_user_by(**{"email": email})
             if user is None:
                 return self._db.add_user(email, _hash_password(password))
             else:
@@ -95,7 +95,7 @@ class Auth:
         """
         try:
             # Fetch the user by email from the database
-            user = self._db.find_user_by(email=email)
+            user = self._db.find_user_by(**{"email": email})
 
             # Check if the user exists and verify the password
             if user is not None:
@@ -128,7 +128,7 @@ class Auth:
         """
         try:
             # Find the user by email
-            user = self._db.find_user_by(email=email)
+            user = self._db.find_user_by(**{"email": email})
 
             # Generate a unique session ID
             session_id = _generate_uuid()
