@@ -127,6 +127,7 @@ class DB:
 
             # Commit the changes to the database
             self._session.commit()
+            self._session.refresh(user)
 
         except NoResultFound as e:
             # Handle any exceptions that occur and re-raise them
