@@ -112,22 +112,24 @@ class DB:
                         or committing changes to the database.
         """
         try:
-            # Find the user with the given user ID
-            user = self.find_user_by(id=user_id)
-        except NoResultFound:
-            raise ValueError("User with id {} not found".format(user_id))
+            # Fetch the user by ID
+            user = self.find_user_by(**{"id": user_id})
+            if not user:
+                raise NoResultFound
 
-        # Update user's attributes
-        for key, value in kwargs.items():
-            if not hasattr(user, key):
-                # Raise error if an argument that does not correspond to a user
-                # attribute is passed
-                raise ValueError("User has no attribute {}".format(key))
-            setattr(user, key, value)
+            # Update the attributes dynamically based on kwargs
+            for key, value in kwargs.items():
+                if not hasattr(user, key):
+                    # Not a valid attribute
+                    raise ValueError
+                    # a valid attribute of the user
+                setattr(user, key, value)
 
-        try:
-            # Commit changes to the database
+            # Commit the changes to the database
             self._session.commit()
-        except InvalidRequestError:
-            # Raise error if an invalid request is made
-            raise ValueError("Invalid request")
+
+        except NoResultFound as e:
+            # Handle any exceptions that occur and re-raise them
+            raise e
+        except ValueError as e:
+            raise e
