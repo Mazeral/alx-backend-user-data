@@ -113,6 +113,8 @@ class DB:
         try:
             # Fetch the user by ID
             user = self.find_user_by(**{"id": user_id})
+            if not user:
+                raise NoResultFound
 
             # Update the attributes dynamically based on kwargs
             for key, value in kwargs.items():
