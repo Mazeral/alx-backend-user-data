@@ -75,6 +75,9 @@ class Auth:
         except ValueError as e:
             raise e
             return None
+        except NoResultFound:
+            raise e
+            return None
 
     def valid_login(self, email: str, password: str) -> bool:
         """
