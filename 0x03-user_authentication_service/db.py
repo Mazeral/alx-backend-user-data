@@ -48,17 +48,13 @@ class DB:
             Exception: If an error occurs while adding the user to the
             database.
         """
-        try:
-            new_user = User(
-                email=email,
-                hashed_password=hashed_password
-            )
-            self._session.add(new_user)
-            self._session.commit()
-            self._session.refresh(new_user)
-            return new_user
-        except Exception as e:
-            raise e
+        new_user = User(
+            email=email,
+            hashed_password=hashed_password
+        )
+        self._session.add(new_user)
+        self._session.commit()
+        return new_user
 
     def find_user_by(self, **kwargs: Dict[str, str]) -> User:
         """
