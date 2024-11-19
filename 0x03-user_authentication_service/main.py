@@ -2,16 +2,9 @@
 """
 Main file
 """
-from auth import Auth
+from user import User
 
-email = 'bob@bob.com'
-password = 'MyPwdOfBob'
-auth = Auth()
+print(User.__tablename__)
 
-auth.register_user(email, password)
-
-print(auth.valid_login(email, password))
-
-print(auth.valid_login(email, "WrongPwd"))
-
-print(auth.valid_login("unknown@email", password))
+for column in User.__table__.columns:
+    print("{}: {}".format(column, column.type))

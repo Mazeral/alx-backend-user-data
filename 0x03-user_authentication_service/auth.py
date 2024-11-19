@@ -5,6 +5,7 @@ import bcrypt
 from db import DB
 from user import User
 from sqlalchemy.orm.exc import NoResultFound
+import uuid
 
 
 def _hash_password(password: str) -> bytes:
@@ -23,6 +24,19 @@ def _hash_password(password: str) -> bytes:
     """
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode('utf-8'), salt)
+
+
+def _generate_uuid() -> str:
+    """
+    Generates a new UUID (Universally Unique Identifier) as a string.
+
+    This function creates a version 4 UUID, which is randomly generated,
+    and converts it to a string representation.
+
+    Returns:
+        str: A string representation of the generated UUID.
+    """
+    return str(uuid.uuid4())
 
 
 class Auth:
@@ -92,3 +106,41 @@ class Auth:
         except NoResultFound:
             # Return False if no user is found
             return False
+
+    def create_session(self, email: str) -> str:
+        """
+        Creates a new session for a user and saves it in the database.
+
+        This method generates a unique session ID for a user identified by their
+        email, assigns it to the user's `session_id` field, and commits the 
+        change to the database. The generated session ID is then returned.
+
+        Args:
+            email (str): The email address of the user for whom the session is 
+                         being created.
+
+        Returns:
+            str: The generated session ID.
+
+        Raises:
+            Exception: If an error occurs while querying the database or updating
+                       the user's session information.
+        """
+        try:
+            # Find the user by email
+            user = self._db.find_user_by(email=email)
+            
+            # Generate a unique session ID
+            session_id = _generate_uuid()
+            
+            # Assign the session ID to the user
+            user.session_id = session_id
+            
+            # Commit the changes to the database
+            self._session.commit()
+            
+            # Return the generated session ID
+            return session_id
+        except Exception as e:
+            # Raise any exception that occurs
+            raise e
