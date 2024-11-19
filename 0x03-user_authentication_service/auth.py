@@ -7,6 +7,8 @@ from user import User
 from sqlalchemy.orm.exc import NoResultFound
 import uuid
 
+logging.disable(logging.WARNING)
+
 
 def _hash_password(password: str) -> bytes:
     """
