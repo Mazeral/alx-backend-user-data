@@ -121,7 +121,7 @@ class DB:
             for key, value in kwargs.items():
                 if not hasattr(user, key):
                     # Not a valid attribute
-                    raise ValueError
+                    raise ValueError("User has no attribute {}".format(key))
                 # a valid attribute of the user
                 setattr(user, key, value)
 
