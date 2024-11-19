@@ -145,3 +145,23 @@ class Auth:
         except Exception as e:
             # Raise any exception that occurs
             raise e
+
+    def get_user_from_session_id(self, session_id: str) -> User | None:
+        """
+        Retrieves a user based on their session ID.
+
+        This method queries the database for a user whose session ID matches
+        the provided session_id. If a matching user is found, it is returned.
+        If no user is found, the method returns None.
+
+        Args:
+            session_id (str): The session ID associated with the user.
+
+        Returns:
+            User | None: The User object if a matching session ID is found,
+                         otherwise None.
+        """
+        user = self._db.find_user_by(**{"session_id": session_id})
+        if user:
+            return user
+        return None
