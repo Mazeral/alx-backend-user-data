@@ -111,34 +111,34 @@ class Auth:
         """
         Creates a new session for a user and saves it in the database.
 
-        This method generates a unique session ID for a user identified by their
-        email, assigns it to the user's `session_id` field, and commits the 
-        change to the database. The generated session ID is then returned.
+        This method generates a unique session ID for a user identified by
+        their email, assigns it to the user's `session_id` field, and commits
+        the change to the database. The generated session ID is then returned.
 
         Args:
-            email (str): The email address of the user for whom the session is 
+            email (str): The email address of the user for whom the session is
                          being created.
 
         Returns:
             str: The generated session ID.
 
         Raises:
-            Exception: If an error occurs while querying the database or updating
-                       the user's session information.
+            Exception: If an error occurs while querying the database or
+            updating the user's session information.
         """
         try:
             # Find the user by email
             user = self._db.find_user_by(email=email)
-            
+
             # Generate a unique session ID
             session_id = _generate_uuid()
-            
+
             # Assign the session ID to the user
             user.session_id = session_id
-            
+
             # Commit the changes to the database
             self._session.commit()
-            
+
             # Return the generated session ID
             return session_id
         except Exception as e:

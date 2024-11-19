@@ -3,7 +3,7 @@
 Flask app module.
 """
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 from auth import Auth
 
 # Defining the Flask app instance
@@ -60,6 +60,17 @@ def users():
     except Exception as e:
         # Return error response if email is already registered
         return jsonify({"message": "email already registered"}), 400
+
+
+@app.route('/sessions', methods=["POST"])
+def login():
+    email = request.form.email
+    password = request.form.password
+    try:
+        auth.valid_login(email=email, password=password)
+        auth.create_session(email=email)
+    except Exception as e:
+        abort(401)
 
 
 # Running the Flask app
