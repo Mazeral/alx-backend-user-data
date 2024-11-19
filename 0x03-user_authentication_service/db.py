@@ -54,6 +54,7 @@ class DB:
         )
         self._session.add(new_user)
         self._session.commit()
+        self._session.refresh(new_user)
         return new_user
 
     def find_user_by(self, **kwargs) -> User:
