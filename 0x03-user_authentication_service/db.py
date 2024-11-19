@@ -84,7 +84,7 @@ class DB:
         except InvalidRequestError as e:
             raise e
 
-    def update_user(self, user_id: int, **kwargs: Dict[str, str]) -> None:
+    def update_user(self, user_id: int, **kwargs) -> None:
         """
         Updates the attributes of an existing user record based on the provided
         user_id and keyword arguments.
