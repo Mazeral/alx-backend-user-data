@@ -127,6 +127,36 @@ def logout():
         abort(403)
 
 
+@app.route("/profile", methods=["GET"], strict_slashes=False)
+def profile():
+    """
+    Retrieves the profile of a user based on their session ID.
+
+    This route receives a `session_id` via a GET request and looks up the
+    user associated with the session ID. If a matching user is found, their
+    email is returned in the response. If no user is found for the provided
+    session ID, a 403 Forbidden error is raised.
+
+    Methods:
+        GET
+
+    Args:
+        None: The session ID is provided via the request's form data.
+
+    Returns:
+        Response: A JSON response with the user's email if the session is valid
+
+    Raises:
+        403 Forbidden: If no user is found for the provided session ID.
+    """
+    session_id = request.form.get("session_id")
+    user = auth._db.find_user_by(**{"session_id": session_id})
+    if user:
+        return jsonify({"email": user.email}), 200
+    else:
+        abort(403)
+
+
 # Running the Flask app
 if __name__ == "__main__":
     """
