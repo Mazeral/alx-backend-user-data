@@ -243,4 +243,4 @@ if __name__ == "__main__":
     This block runs the Flask app on host 0.0.0.0 and port 5000, making it
     accessible on all network interfaces.
     """
-    app.run(host="0.0.0.0", port="5000")
+    app.run(host="0.0.0.0", port=5000)
