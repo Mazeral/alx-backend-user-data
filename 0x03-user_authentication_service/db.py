@@ -56,7 +56,7 @@ class DB:
         self._session.commit()
         return new_user
 
-    def find_user_by(self, **kwargs: Dict[str, str]) -> User:
+    def find_user_by(self, **kwargs) -> User:
         """
         Finds a user by given attributes. Returns the first match found.
 
@@ -64,24 +64,24 @@ class DB:
             **kwargs: The attributes to filter users by.
 
         Returns:
-            List[UserType]: A list of matching User objects.
+            User: The first matching User object.
 
         Raises:
-            Exception: If an error occurs while querying the database.
+            NoResultFound: If no user is found.
+            InvalidRequestError: If invalid attributes are provided.
         """
-        try:
-            if kwargs:
-                user = self._session.query(User).filter_by(**kwargs).first()
-                if user:
-                    return user
-                else:
-                    raise NoResultFound
-            else:
-                raise InvalidRequestError
-        except NoResultFound:
-            raise NoResultFound
-        except InvalidRequestError:
+        if not kwargs:
             raise InvalidRequestError
+        
+        try:
+            user = self._session.query(User).filter_by(**kwargs).first()
+            if user is None:
+                raise NoResultFound
+            return user
+        except NoResultFound as e:
+            raise e
+        except InvalidRequestError as e:
+            raise e
 
     def update_user(self, user_id: int, **kwargs: Dict[str, str]) -> None:
         """
