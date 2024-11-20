@@ -2,10 +2,10 @@
 """hashing module
 """
 import logging
-import bcrypt
 from db import DB
 from user import User
 from sqlalchemy.orm.exc import NoResultFound
+from bcrypt import hashpw, gensalt
 import uuid
 
 logging.disable(logging.WARNING)
@@ -25,7 +25,7 @@ def _hash_password(password: str) -> bytes:
     Returns:
         bytes: The hashed password as a byte string.
     """
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    return hashpw(password.encode("utf-8"), gensalt())
 
 
 def _generate_uuid() -> str:
