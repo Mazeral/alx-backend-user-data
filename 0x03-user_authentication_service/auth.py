@@ -13,12 +13,19 @@ logging.disable(logging.WARNING)
 
 def _hash_password(password: str) -> bytes:
     """
-    Hash a Password
-    """
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    Hashes a plaintext password using bcrypt.
 
-    return hashed
+    This method generates a salt and then hashes the given password with
+    the salt using bcrypt's hashing algorithm. The resulting hash is returned
+    as a byte string.
+
+    Args:
+        password (str): The plaintext password to hash.
+
+    Returns:
+        bytes: The hashed password as a byte string.
+    """
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
 
 def _generate_uuid() -> str:
