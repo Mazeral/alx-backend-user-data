@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """hashing module
 """
+import logging
 import bcrypt
 from db import DB
 from user import User
@@ -10,29 +11,17 @@ import uuid
 logging.disable(logging.WARNING)
 
 
-def _hash_password(password: str) -> bytes:
-    """
-    Hashes a plaintext password using bcrypt.
 
-    This method generates a salt and then hashes the given password with
-    the salt using bcrypt's hashing algorithm. The resulting hash is returned
-    as a byte string.
+def _hash_password(password: str) -> bytes:
+    """Hashes a password and returns bytes.
 
     Args:
-        password (str): The plaintext password to hash.
+        password (str): The password to be hashed.
 
     Returns:
-        bytes: The hashed password as a byte string.
+        bytes: The hashed password.
     """
-    try:
-        salt = bcrypt.gensalt()
-        if isinstance(password, str):
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-            return bytes(hashed_password)
-        else:
-            raise ValueError
-    except Exception as e:
-        raise e
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
 
 def _generate_uuid() -> str:
