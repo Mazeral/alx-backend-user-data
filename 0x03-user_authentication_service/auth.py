@@ -24,9 +24,15 @@ def _hash_password(password: str) -> bytes:
     Returns:
         bytes: The hashed password as a byte string.
     """
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return bytes(hashed_password)
+    try:
+        salt = bcrypt.gensalt()
+        if isinstance(password, str):
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+            return bytes(hashed_password)
+        else:
+            raise ValueError
+    except Exception as e:
+        raise e
 
 
 def _generate_uuid() -> str:
