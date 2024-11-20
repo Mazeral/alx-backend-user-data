@@ -25,7 +25,7 @@ def _hash_password(password: str) -> bytes:
     Returns:
         bytes: The hashed password as a byte string.
     """
-    return hashpw(password.encode("utf-8"), gensalt())
+    return hashpw(password.encode("utf-8"), gensalt(12))
 
 
 def _generate_uuid() -> str:
