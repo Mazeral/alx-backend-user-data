@@ -7,6 +7,7 @@ from user import User
 from sqlalchemy.orm.exc import NoResultFound
 from bcrypt import hashpw, gensalt
 import uuid
+from os import getenv
 
 logging.disable(logging.WARNING)
 
@@ -25,7 +26,8 @@ def _hash_password(password: str) -> bytes:
     Returns:
         bytes: The hashed password as a byte string.
     """
-    return hashpw(password.encode("utf-8"), gensalt(12))
+    rounds = getenv("ROUNDS")
+    return hashpw(password.encode("utf-8"), gensalt(rounds))
 
 
 def _generate_uuid() -> str:
