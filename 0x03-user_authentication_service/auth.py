@@ -8,8 +8,6 @@ from sqlalchemy.orm.exc import NoResultFound
 import uuid
 import bcrypt
 
-logging.disable(logging.WARNING)
-
 
 def _hash_password(password: str) -> bytes:
     """
@@ -66,17 +64,15 @@ class Auth:
             ValueError: If a user with the given email already exists.
         """
         try:
-            user = self._db.find_user_by(**{"email": email})
+            user = self._db.find_user_by(email=email)
             if user is None:
                 return self._db.add_user(email, _hash_password(password))
             else:
                 raise ValueError(f"User {email} already exists")
-        except ValueError as e:
-            raise e
-            return None
         except NoResultFound:
-            raise e
-            return None
+            return self._db.add_user(email, _hash_password(password))
+        except ValueError:
+            raise
 
     def valid_login(self, email: str, password: str) -> bool:
         """
@@ -185,9 +181,9 @@ class Auth:
         Returns:
             None: This method does not return any value.
         """
-        user = self._db.find_user_by(**{"user_id": user_id})
+        user = self._db.find_user_by(**{"id": user_id})
         if user:
-            self._db.update_user(**{"session_id": None})
+            self._db.update_user(user_id, **{"session_id": None})
         return None
 
     def get_reset_password_token(self, email: str) -> str:

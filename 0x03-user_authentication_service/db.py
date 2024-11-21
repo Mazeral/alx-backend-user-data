@@ -77,10 +77,8 @@ class DB:
         try:
             user = self._session.query(User).filter_by(**kwargs).first()
             if user is None:
-                raise NoResultFound
+                return None
             return user
-        except NoResultFound as e:
-            raise e
         except InvalidRequestError as e:
             raise e
 
@@ -113,7 +111,7 @@ class DB:
         """
         try:
             # Fetch the user by ID
-            user = self.find_user_by(**{"id": user_id})
+            user = self.find_user_by(id=user_id)
             if not user:
                 raise NoResultFound
 

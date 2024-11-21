@@ -88,8 +88,10 @@ def login():
 
     login_validation = auth.valid_login(email=email, password=password)
     if login_validation:
-        auth.create_session(email=email)
-        return jsonify({"email": email, "message": "logged in"})
+        response = jsonify({"email": email, "message": "logged in"})
+        session_id = auth.create_session(email=email)
+        response.set_cookie("session_id", session_id)
+        return response
 
     abort(401)
 
@@ -122,7 +124,7 @@ def logout():
     user = auth.get_user_from_session_id(session_id)
     if user:
         auth.destroy_session(user.id)
-        redirect("/")
+        return redirect("/")
     else:
         abort(403)
 
@@ -220,15 +222,15 @@ def update_password():
         email = request.form.get("email")
         reset_token = request.form.get("reset_token")
         new_password = request.form.get("new_password")
-        user = auth.find_user_by(**{"email": email})
+        user = auth._db.find_user_by(**{"email": email})
         if user:
-            auth._db.update_password(reset_token, new_password)
-            return 200, jsonify(
+            auth.update_password(reset_token, new_password)
+            return jsonify(
                     {
                         "email": email,
                         "message": "Password updated"
                         }
-                    )
+                    ), 200
         else:
             abort(403)
     except Exception as e:

@@ -6,69 +6,157 @@ import requests
 
 
 link = "http://localhost:5000/{}"
+
+
 def register_user(email: str, password: str) -> None:
-    response = requests.post(
-            "http://localhost:5000/users",
-            data={"email": email, "password": password}
-            )
-    # The string after the comma is the error message that will be printed
-    # If the assertion failed
-    assert response.status_code == 200, f"Expected 200, got: {response.status_code}"
-    assert response.json() == {"email": email, "message": "User created"}
+    """
+    Registers a new user.
+
+    Args:
+        email (str): Email address.
+        password (str): Password.
+
+    Returns:
+        None
+    """
+    url = "http://localhost:5000/users"
+    data = {"email": email, "password": password}
+    response = requests.post(url, data=data)
+    assert response.status_code == 200, f"Expected 200, got: \
+            {response.status_code}"
+    assert response.json() == {"email": email, "message": "user created"}
+
 
 def log_in_wrong_password(email: str, password: str) -> None:
-    response = requests.post(
-            link.format("sessions"),
-            data={"email": email, "password": BlaBla}
-            )
-    assert response.status_code == 401, f"Expected 401, got: {response.status_code}"
+    """
+    Attempts to log in with an incorrect password.
+
+    Args:
+        email (str): Email address.
+        password (str): Incorrect password.
+
+    Returns:
+        None
+    """
+    url = link.format("sessions")
+    data = {"email": email, "password": "BlaBla"}
+    response = requests.post(url, data=data)
+    assert response.status_code == 401, f"Expected 401, \
+            got: {response.status_code}"
+
 
 def log_in(email: str, password: str) -> str:
-    response = request.post(
-            link.format("sessions"),
-            data={"email": email, "password": password}
-            )
-    assert response.status_code == 200, f"Expected 200, got: {response.status_code}"
-    assert response.json() == {"email": email, "message": "logged in"}, "Wrong message"
+    """
+    Logs in a user.
+
+    Args:
+        email (str): Email address.
+        password (str): Password.
+
+    Returns:
+        str: Session ID.
+    """
+    url = link.format("sessions")
+    data = {"email": email, "password": password}
+    response = requests.post(url, data=data)
+    assert response.status_code == 200, f"Expected 200,\
+            got: {response.status_code}"
+    assert response.json() == {"email": email, "message": "logged in"}
+    session_id = response.cookies.get("session_id")
+    if not session_id:
+        raise ValueError("Session ID cookie is missing")
+    return session_id
 
 
 def profile_unlogged() -> None:
-    response = requests.post(
-            link.format("profile"),
-            data = {}
-            )
-    assert response.status_code == 403, f"Expected 403, got: {response.status_code}"
-        
+    """
+    Attempts to access the profile without being logged in.
+
+    Returns:
+        None
+    """
+    url = link.format("profile")
+    data = {"session_id": ""}
+    response = requests.get(url, data=data)
+    assert response.status_code == 403, f"Expected 403,\
+            got: {response.status_code}"
+
+
 def profile_logged(session_id: str) -> None:
-    response - requests.post(
-            link.format("profile"),
-            data = {"session_id": session_id}
-            )
-    assert response.status_code == 200, f"Expected 403, got: {response.status_code}"
-    assert response.json() == {"email": email}
+    """
+    Attempts to access the profile while logged in.
+
+    Args:
+        session_id (str): Session ID.
+
+    Returns:
+        None
+    """
+    url = link.format("profile")
+    data = {"session_id": session_id}
+    response = requests.get(url, data=data)
+    assert response.status_code == 200, f"Expected 200,\
+            got: {response.status_code}"
+    assert response.json() == {"email": EMAIL}
 
 
 def log_out(session_id: str) -> None:
-    response = requests.delete(
-            link.format("sessions"),
-            data = {"session_id": session_id}
-            ) 
-    assert response.status_code == 200, f"Expected 200, got: {response.status_code}"
+    """
+    Logs out a user.
+
+    Args:
+        session_id (str): Session ID.
+
+    Returns:
+        None
+    """
+    url = link.format("sessions")
+    data = {"session_id": session_id}
+    response = requests.delete(url, data=data)
+    assert response.status_code == 200, f"Expected 200,\
+            got: {response.status_code}"
+
 
 def reset_password_token(email: str) -> str:
-    response = requests.post(
-            link.format("reset_password"),
-            data = {"email": email}
-            )
-    assert response.status_code == 200, f"Expected 200, got: {response.status_code}"
-    assert response.json() == {"email": email, "reset_token": reset_token}
+    """
+    Requests a password reset token.
+
+    Args:
+        email (str): Email address.
+
+    Returns:
+        str: Reset token.
+    """
+    url = link.format("reset_password")
+    data = {"email": email}
+    response = requests.post(url, data=data)
+    assert response.status_code == 200, f"Expected 200,\
+            got: {response.status_code}"
+    response_data = response.json()
+    assert "reset_token" in response_data
+    reset_token = response_data["reset_token"]
+    assert response_data == {"email": email, "reset_token": reset_token}
+    return reset_token
+
 
 def update_password(email: str, reset_token: str, new_password: str) -> None:
-    response = requests.put(
-            link.format("reset_password"),
-            data = {"email": email, "reset_token": reset_token, "new_password": new_password}
-            )
-    assert response.status_code == 200, f"Expected 200, got: {response.status_code}"
+    """
+    Updates a user's password.
+
+    Args:
+        email (str): Email address.
+        reset_token (str): Reset token.
+        new_password (str): New password.
+
+    Returns:
+        None
+    """
+    url = link.format("reset_password")
+    data = {"email": email, "reset_token": reset_token,
+            "new_password": new_password}
+    response = requests.put(url, data=data)
+    assert response.status_code == 200, f"Expected 200,\
+            got: {response.status_code}"
     assert response.json() == {"email": email, "message": "Password updated"}
 
 
