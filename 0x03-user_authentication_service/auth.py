@@ -147,7 +147,7 @@ class Auth:
             # Raise any exception that occurs
             raise e
 
-    def get_user_from_session_id(self, session_id: str) -> User | None:
+    def get_user_from_session_id(self, session_id: str) -> User:
         """
         Retrieves a user based on their session ID.
 
